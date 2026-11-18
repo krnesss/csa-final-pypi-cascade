@@ -25,3 +25,6 @@ results/logs/
 # 重抓/修正时的临时备份，不要提交（体积大且与正式数据重复）
 *.bak
 *.tmp
+
+# 纯墙钟测量（秒），不参与可复现性承诺，也就不入库
+results/tables/t27_betweenness_runtime.json

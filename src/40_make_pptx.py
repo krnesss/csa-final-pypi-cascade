@@ -621,6 +621,24 @@ except Exception as e:  # noqa: BLE001
     log(f"  [warn] 固定 PPTX 文档属性失败：{e}")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
-prs.save(str(OUT))
+
+# ---------------------------------------------------------------- 可复现的保存
+# python-pptx 在写 OOXML 包时，把**当前时间**写进每个 zip 条目的 mtime，
+# 于是"同样内容、同样文档属性"每次生成也会得到不同字节。
+# 为了让"端到端重跑逐位一致"这条承诺也覆盖 PPTX，这里改成：
+#   先存到临时文件 → 用固定时间戳重写 zip 条目 → 原子替换。
+import zipfile as _zip
+
+_TMP = OUT.with_suffix(".pptx.tmp")
+prs.save(str(_TMP))
+_FIXED_DT = (2026, 11, 1, 0, 0, 0)
+with _zip.ZipFile(_TMP) as zin, _zip.ZipFile(OUT, "w", _zip.ZIP_DEFLATED) as zout:
+    # 条目顺序也固定下来（按名字排序），否则 zip 目录的物理顺序可能随实现变化
+    for name in sorted(zin.namelist()):
+        info = _zip.ZipInfo(name, date_time=_FIXED_DT)
+        info.compress_type = _zip.ZIP_DEFLATED
+        info.external_attr = 0o600 << 16
+        zout.writestr(info, zin.read(name))
+_TMP.unlink(missing_ok=True)
 log(f"生成完成：{OUT}（{len(prs.slides.__iter__.__self__._sldIdLst)} 页）")
 log.close()

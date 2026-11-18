@@ -56,7 +56,9 @@ def forms(v) -> list[str]:
         out += [s.rstrip("0").rstrip(".") for s in out]
         for nd in (1, 2, 3):
             out.append(f"{v*100:.{nd}f}")       # 百分比形态
-    return sorted({s for s in out if s}, key=len, reverse=True)
+    # 平局必须有显式次序：只按长度排序时，等长字符串的相对顺序来自 set 的哈希顺序，
+    # 那会随 PYTHONHASHSEED 变化，让 claims.json 每次重跑都不一样（实测踩过）。
+    return sorted({s for s in out if s}, key=lambda s: (-len(s), s))
 
 
 class Claims:
@@ -74,7 +76,7 @@ class Claims:
         """
         f = forms(value)
         if extra_forms:
-            f = sorted(set(f) | set(extra_forms), key=len, reverse=True)
+            f = sorted(set(f) | set(extra_forms), key=lambda s: (-len(s), s))
         self.items[key] = {
             "value": value, "source": source, "definition": definition,
             "must_appear": must, "must_in": must_in or [], "forms": f,
