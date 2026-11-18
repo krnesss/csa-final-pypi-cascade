@@ -187,8 +187,7 @@ def build_claims() -> Claims:
             C.add("btw.rho_min", round(float(sm["spearman_vs_exact"].min()), 4),
                   "t27_betweenness_stability.csv",
                   "抽样介数与精确介数的 Spearman 最小值", must=False)
-            C.add("btw.exact_runtime_s", round(float(b.loc[b["mode"] == "exact", "runtime_s"].iloc[0]), 1),
-                  "t27_betweenness_stability.csv", "精确全源介数用时（秒）", must=False)
+            # 运行时长是墙钟量，不进 claims（否则每次重跑都会"不一致"）
         ov = TBL / "t27_betweenness_seed_overlap.csv"
         if ov.exists():
             o = read_csv_safe(ov)

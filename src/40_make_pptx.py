@@ -603,6 +603,23 @@ _tb(s, Inches(0.9), Inches(3.85), Inches(11.5), Inches(2.2),
     "这两件事的区别，恰好是整个供应链安全里最容易被忽略的一步。",
     size=17, color=RGBColor(0xC8, 0xD6, 0xDE), line=1.6)
 
+# 固定文档属性：python-pptx 默认把 core_properties.modified 设成"现在"，
+# 那会让同一份内容每次生成出不同字节，破坏"端到端重跑逐位一致"这条承诺。
+try:
+    cp = prs.core_properties
+    cp.author = "复杂系统分析 期末项目"
+    cp.title = "一个底层包的漏洞，怎样级联到整个生态？"
+    cp.subject = "PyPI 依赖网络中的影响传播、瓶颈识别与韧性情景"
+    cp.comments = "由 src/40_make_pptx.py 从 results/tables 自动生成"
+    import datetime as _dt
+    fixed = _dt.datetime(2026, 11, 1, 0, 0, 0)
+    cp.created = fixed
+    cp.modified = fixed
+    cp.last_modified_by = "run_all.ps1"
+    cp.revision = 1
+except Exception as e:  # noqa: BLE001
+    log(f"  [warn] 固定 PPTX 文档属性失败：{e}")
+
 OUT.parent.mkdir(parents=True, exist_ok=True)
 prs.save(str(OUT))
 log(f"生成完成：{OUT}（{len(prs.slides.__iter__.__self__._sldIdLst)} 页）")

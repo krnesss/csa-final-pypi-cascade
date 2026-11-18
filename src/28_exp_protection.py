@@ -229,7 +229,8 @@ def main() -> None:
         "k_values": ks, "damage_fractions": qs, "n_random_repeats": nrep,
         "protection_ranking": "n_transitive_dependents（降序，同值按名称）",
         "damage_ranking_targeted": "in_degree（降序，同值按名称）",
-        "runtime_s": time.time() - t0,
+        "runtime_s_excluded": ("运行时长是墙钟量，不参与可复现性承诺；"
+                               "本文件在去掉该字段后逐位可复现"),
         "interpretation_rule":
             "若 top_critical 的 ΔS 显著大于 random 的 ΔS，说明保护预算应按枢纽排名投放；"
             "若两者接近，说明『保护谁』在这种破坏模式下不重要，结论应写成否定性结果。",

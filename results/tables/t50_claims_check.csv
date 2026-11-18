@@ -35,7 +35,6 @@ null.cycle_pres.condensation.rho,0.979,t24_null_compare.csv,族 cycle_pres / 口
 null.degree.condensation.rho,0.958,t24_null_compare.csv,族 degree / 口径 condensation 的排名一致性,README.md=1;report/03_结果.md=0.96;report/04_讨论与结论.md=1;report/05_答辩讲稿.md=1;src/40_make_pptx.py=1.0,
 btw.top50_hits_min,34.0,t27_betweenness_stability.csv,抽样介数与精确介数 Top-50 命中最少的一次,,README.md;report/03_结果.md;report/04_讨论与结论.md;report/05_答辩讲稿.md;src/40_make_pptx.py
 btw.rho_min,0.3553,t27_betweenness_stability.csv,抽样介数与精确介数的 Spearman 最小值,README.md=0.4;report/03_结果.md=0.36;src/40_make_pptx.py=0.36,report/04_讨论与结论.md;report/05_答辩讲稿.md
-btw.exact_runtime_s,61.2,t27_betweenness_stability.csv,精确全源介数用时（秒）,,README.md;report/03_结果.md;report/04_讨论与结论.md;report/05_答辩讲稿.md;src/40_make_pptx.py
 btw.seed_top50_jaccard_min,0.389,t27_betweenness_seed_overlap.csv,同 k 不同 seed 之间 Top-50 的 Jaccard 最小值,README.md=0.4;report/03_结果.md=0.39;src/40_make_pptx.py=0.4,report/04_讨论与结论.md;report/05_答辩讲稿.md
 protect.gain_ratio_median,48.45,t28_protection_gain_ratio.csv,同 k 下『保护枢纽』相对『随机保护』的 ΔS 增益中位数,report/03_结果.md=48.5,README.md;report/04_讨论与结论.md;report/05_答辩讲稿.md;src/40_make_pptx.py
 protect.gain_ratio_min,9.65,t28_protection_gain_ratio.csv,同 k 下『保护枢纽』相对『随机保护』的 ΔS 增益最小值,,README.md;report/03_结果.md;report/04_讨论与结论.md;report/05_答辩讲稿.md;src/40_make_pptx.py

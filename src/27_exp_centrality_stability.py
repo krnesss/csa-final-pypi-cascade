@@ -77,9 +77,11 @@ def main() -> None:
     ex_top = {k: set(top_set(exact, k)) for k in TOPS}
     ex_vec = np.array([exact[v] for v in G.nodes()], dtype=float)
 
+    # ★ 运行时长是墙钟量，**不进主表**——否则端到端重跑不可能逐位一致。
+    # 主表只放分析结果；时长单独写进 t27_betweenness_runtime.json。
+    runtime: dict[str, object] = {"exact_s": t_exact, "sampled_s": {}}
     rows = [{
         "k": int(n), "seed": -1, "mode": "exact",
-        "runtime_s": t_exact,
         "spearman_vs_exact": 1.0, "pearson_vs_exact": 1.0,
         **{f"top{k}_hits": k for k in TOPS},
         **{f"top{k}_jaccard": 1.0 for k in TOPS},
@@ -96,7 +98,8 @@ def main() -> None:
             bv = np.array([b[v] for v in G.nodes()], dtype=float)
             rho = stats.spearmanr(ex_vec, bv).statistic
             pear = stats.pearsonr(ex_vec, bv).statistic
-            rec = {"k": int(k), "seed": int(sd), "mode": "sampled", "runtime_s": dt,
+            runtime["sampled_s"][f"k={k},seed={sd}"] = dt
+            rec = {"k": int(k), "seed": int(sd), "mode": "sampled",
                    "spearman_vs_exact": float(rho), "pearson_vs_exact": float(pear)}
             for t in TOPS:
                 s = set(top_set(b, t))
@@ -133,10 +136,9 @@ def main() -> None:
 
     write_json(ensure_parent(TBL / "t27_betweenness_runtime.json"), {
         "n_nodes": n, "n_edges": m,
-        "exact_runtime_s": t_exact,
-        "sampled_runtime_s": {f"k={k},seed={s}": v["runtime_s"] for (k, s), v in
-                              zip(cache.keys(), [{"runtime_s": r["runtime_s"]}
-                                                  for r in rows if r["mode"] == "sampled"])},
+        "runtime_s": runtime,
+        "note": "运行时长是墙钟量，**不参与可复现性承诺**；分析结果在 "
+                "t27_betweenness_stability.csv 里，那份是逐位可复现的。",
         "main_pipeline_mode": "exact" if not B.get("betweenness_k") else
                               f"sampled k={B['betweenness_k']}",
         "conclusion_rule": "若 top50_hits 明显低于 50 或 seed 间 Top-50 Jaccard 明显低于 1，"
