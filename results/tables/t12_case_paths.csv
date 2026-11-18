@@ -1,0 +1,28 @@
+case,source_package,path_id,hop,package,is_seed,edge_meaning
+foundational,packaging,1,0,packaging,True,（起点）
+foundational,packaging,1,1,a2a-sdk,True,packaging 直接依赖 a2a-sdk
+foundational,packaging,1,2,adcp,True,a2a-sdk 直接依赖 adcp
+foundational,packaging,2,0,packaging,True,（起点）
+foundational,packaging,2,1,a2a-sdk,True,packaging 直接依赖 a2a-sdk
+foundational,packaging,2,2,agent-framework-a2a,True,a2a-sdk 直接依赖 agent-framework-a2a
+foundational,packaging,3,0,packaging,True,（起点）
+foundational,packaging,3,1,a2a-sdk,True,packaging 直接依赖 a2a-sdk
+foundational,packaging,3,2,agentenv-framework,True,a2a-sdk 直接依赖 agentenv-framework
+middleware,boto3,1,0,boto3,True,（起点）
+middleware,boto3,1,1,amazon-textract-caller,True,boto3 直接依赖 amazon-textract-caller
+middleware,boto3,1,2,amazon-textract-textractor,True,amazon-textract-caller 直接依赖 amazon-textract-textractor
+middleware,boto3,2,0,boto3,True,（起点）
+middleware,boto3,2,1,amazon-textract-response-parser,True,boto3 直接依赖 amazon-textract-response-parser
+middleware,boto3,2,2,amazon-textract-caller,True,amazon-textract-response-parser 直接依赖 amazon-textract-caller
+middleware,boto3,3,0,boto3,True,（起点）
+middleware,boto3,3,1,aurora-data-api,True,boto3 直接依赖 aurora-data-api
+middleware,boto3,3,2,sqlalchemy-aurora-data-api,True,aurora-data-api 直接依赖 sqlalchemy-aurora-data-api
+edge_app,aiobotocore,1,0,aiobotocore,True,（起点）
+edge_app,aiobotocore,1,1,aioboto3,True,aiobotocore 直接依赖 aioboto3
+edge_app,aiobotocore,1,2,plato-sdk,True,aioboto3 直接依赖 plato-sdk
+edge_app,aiobotocore,2,0,aiobotocore,True,（起点）
+edge_app,aiobotocore,2,1,aioboto3,True,aiobotocore 直接依赖 aioboto3
+edge_app,aiobotocore,2,2,pytest-aioboto3,True,aioboto3 直接依赖 pytest-aioboto3
+edge_app,aiobotocore,3,0,aiobotocore,True,（起点）
+edge_app,aiobotocore,3,1,inspect-ai,True,aiobotocore 直接依赖 inspect-ai
+edge_app,aiobotocore,3,2,inspect-evals,True,inspect-ai 直接依赖 inspect-evals

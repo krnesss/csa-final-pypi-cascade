@@ -1,8 +1,8 @@
 strategy,q_half_AND,AND_instant,q_half_OR,OR_instant
-by_downloads,0.005,True,0.08130040322580645,False
-by_in_degree,0.005,True,0.043873390557939915,False
-by_transitive_dependents,0.005,True,0.05269252232142859,False
-by_pagerank_importance,0.005,True,0.04265060240963854,False
-by_kcore,0.008534147204529371,False,0.12489281886387993,False
-by_betweenness,0.03432360742705572,False,inf,False
-random,0.13620192062113703,False,inf,False
+by_downloads,0.005,True,0.07210485133020343,False
+by_in_degree,0.005,True,0.03829977628635347,False
+by_transitive_dependents,0.005,True,0.04740018570102136,False
+by_pagerank_importance,0.005,True,0.03710779082177162,False
+by_kcore,0.008234339500162285,False,0.11043478260869563,False
+by_betweenness,0.037346938775510236,False,inf,False
+random,0.12622743490068694,False,inf,False

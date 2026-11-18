@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # 复杂系统分析 期末项目 —— 开源软件依赖网络级联失效
 # 全局配置（唯一真源：所有脚本从这里读参数，保证可复现）
 # =============================================================================
@@ -52,8 +52,6 @@ graph:
   # 边的语义：A -> B 表示 "A 依赖 B"（依赖流方向）
   # 级联传播方向 = 反向（B 有漏洞 -> A 受影响）
   edge_direction: "dependent_to_dependency"
-  # 剔除自环
-  drop_self_loops: true
 
 # -----------------------------------------------------------------------------
 # 实验参数（每个实验脚本都从 here 读取，便于敏感性分析）
@@ -61,7 +59,7 @@ graph:
 experiments:
   # 级联模拟
   cascade:
-    # 结构级联的上界/下界口径见 src/31_exp_cascade.py 的 docstring
+    # 结构级联的上界/下界口径见 src/21_exp_cascade.py 的 docstring
     depth_cap: 50
   # 韧性（移除）实验
   resilience:
@@ -72,13 +70,49 @@ experiments:
     recompute_ranking: false
   # 零模型对照
   null_model:
-    n_realizations: 3
+    # 评审意见 D-02：原来只有 3 次实现，样本太薄，不足以把 38-57x 说成稳定区间。
+    # 每次实现 = 33 万次双边交换 + 一次反向可达位集计算，约 4-5 秒，20 次约 90 秒。
+    n_realizations: 20
     seed_base: 90210
+    # 评审意见 D-01：无边约束的双边交换不保持无环性，实测随机图会长出 361-601 节点的
+    # 巨型 SCC（真实图最大只有 8），这本身就会抬高可达集。因此再加一个**保层次**的
+    # 更强约束零模型：只接受不破坏给定线性扩展的交换，用它把"失去分层"与"其他重连"
+    # 两种效应分解开。见 src/24_exp_nullmodel.py 的 cycle_preserving 分支。
+    cycle_preserving_realizations: 20
+    swaps_per_edge: 8
   # 瓶颈分数
   bottleneck:
     reverse_pagerank_alpha: 0.85
-    betweenness_k: 2000   # 介数中心性用 k 点近似（精确介数 O(VE) 在大图上不可行），null=精确
+    betweenness_k: 0          # 0 = 精确全源介数（本图 15.7k 节点 / 47k 边约 50s，无需采样）
     betweenness_seed: 7
+    # 评审意见 B-04：介数若走抽样（k 点近似）必须报告采样稳定性。
+    # 这里把"抽样 vs 精确"的误差做成可查的表（src/27），好在正文里说清
+    # "我们本来可以用 k=2000 近似，但那会让 Top-50 榜单有多少条是噪声"。
+    betweenness_stability_k: [500, 1000, 2000]
+    betweenness_stability_seeds: [7, 101, 2024]
+  # 评审意见 A-03：回退源（PyPI requires_dist）的 marker 求值基准环境。
+  # 必须显式固定，否则"是否保留某条依赖"取决于跑脚本的机器。
+  fallback_marker_environment:
+    python_version: "3.11"
+    python_full_version: "3.11.9"
+    os_name: "posix"
+    sys_platform: "linux"
+    platform_system: "Linux"
+    platform_machine: "x86_64"
+    platform_python_implementation: "CPython"
+    implementation_name: "cpython"
+    implementation_version: "3.11.9"
+    extra: ""
+  # 评审意见 C-03：题面是"关键包被修复 **或** 被移除"，分工还写了"保护"。
+  # 前两个动作在 src/23 的情景 P/R 里；这里补第三个动作"保护"：
+  # 被保护的包**不会因为自己的依赖坏掉而失效**（钉版本 / vendor / CI 校验），
+  # 相当于在依赖图里放一个防火墙节点，直接切断级联路径。见 src/28。
+  protection:
+    # 0 是**基线**（不保护任何包），必须有，否则算不出 ΔS
+    k_values: [0, 10, 20, 50, 100, 200, 500]
+    damage_fractions: [0.01, 0.03, 0.05, 0.10, 0.20]
+    n_random_repeats: 10
+    random_seed_base: 20251206
 
 figures:
   dpi: 220

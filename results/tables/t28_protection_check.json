@@ -1,0 +1,58 @@
+{
+  "cross_check_vs_bitset": [
+    {
+      "n_removed": 300,
+      "equal": true,
+      "n_failed_propagate": 2262,
+      "n_failed_bitset": 2262
+    },
+    {
+      "n_removed": 400,
+      "equal": true,
+      "n_failed_propagate": 2098,
+      "n_failed_bitset": 2098
+    },
+    {
+      "n_removed": 500,
+      "equal": true,
+      "n_failed_propagate": 4524,
+      "n_failed_bitset": 4524
+    },
+    {
+      "n_removed": 600,
+      "equal": true,
+      "n_failed_propagate": 6474,
+      "n_failed_bitset": 6474
+    },
+    {
+      "n_removed": 700,
+      "equal": true,
+      "n_failed_propagate": 3993,
+      "n_failed_bitset": 3993
+    }
+  ],
+  "cross_check_all_equal": true,
+  "n_nodes": 15780,
+  "n_seeds": 14992,
+  "k_values": [
+    0,
+    10,
+    20,
+    50,
+    100,
+    200,
+    500
+  ],
+  "damage_fractions": [
+    0.01,
+    0.03,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "n_random_repeats": 10,
+  "protection_ranking": "n_transitive_dependents（降序，同值按名称）",
+  "damage_ranking_targeted": "in_degree（降序，同值按名称）",
+  "runtime_s": 3.1925203800201416,
+  "interpretation_rule": "若 top_critical 的 ΔS 显著大于 random 的 ΔS，说明保护预算应按枢纽排名投放；若两者接近，说明『保护谁』在这种破坏模式下不重要，结论应写成否定性结果。"
+}

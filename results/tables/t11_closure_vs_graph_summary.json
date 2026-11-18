@@ -1,0 +1,233 @@
+{
+  "common_population_S": 14992,
+  "universe_seeds": 15000,
+  "graph_nodes": 15780,
+  "closure_rows_used": 153909,
+  "packages_in_graph": 15780,
+  "packages_with_any_dependents": 15780,
+  "packages_in_both_sources": 7017,
+  "only_in_closure": 124,
+  "only_in_graph": 8639,
+  "total_only_closure_pairs": 12567,
+  "total_only_graph_pairs": 48487,
+  "total_both_pairs": 141342,
+  "signed_gap_median": 1.0,
+  "signed_gap_mean": 2.276299112801014,
+  "signed_gap_p05": 0.0,
+  "signed_gap_p95": 3.0,
+  "signed_gap_positive_share": 0.929467680608365,
+  "signed_gap_negative_share": 0.022306717363751585,
+  "signed_gap_zero_share": 0.048225602027883396,
+  "abs_gap_median": 1.0,
+  "abs_gap_p90": 2.0,
+  "abs_gap_p95": 3.0,
+  "abs_gap_p99": 42.0,
+  "abs_gap_max": 944.0,
+  "spearman_within_common_population": 0.9314528856793011,
+  "jaccard_median": 0.6666666666666666,
+  "jaccard_p05": 0.3333333333333333,
+  "jaccard_mean": 0.6364186798332476,
+  "top20_disagreements": [
+    {
+      "name": "idna",
+      "n_closure": 3277,
+      "n_graph": 3850,
+      "n_both": 3051,
+      "only_closure": 226,
+      "only_graph": 799,
+      "jaccard": 0.7485279685966634
+    },
+    {
+      "name": "truststore",
+      "n_closure": 516,
+      "n_graph": 1460,
+      "n_both": 496,
+      "only_closure": 20,
+      "only_graph": 964,
+      "jaccard": 0.33513513513513515
+    },
+    {
+      "name": "typing-extensions",
+      "n_closure": 4316,
+      "n_graph": 5100,
+      "n_both": 4254,
+      "only_closure": 62,
+      "only_graph": 846,
+      "jaccard": 0.8240991863618753
+    },
+    {
+      "name": "tzdata",
+      "n_closure": 1485,
+      "n_graph": 2222,
+      "n_both": 1405,
+      "only_closure": 80,
+      "only_graph": 817,
+      "jaccard": 0.610338835794961
+    },
+    {
+      "name": "certifi",
+      "n_closure": 3054,
+      "n_graph": 3349,
+      "n_both": 2771,
+      "only_closure": 283,
+      "only_graph": 578,
+      "jaccard": 0.7629405286343612
+    },
+    {
+      "name": "h11",
+      "n_closure": 1110,
+      "n_graph": 1114,
+      "n_both": 752,
+      "only_closure": 358,
+      "only_graph": 362,
+      "jaccard": 0.5108695652173914
+    },
+    {
+      "name": "annotated-types",
+      "n_closure": 1351,
+      "n_graph": 2010,
+      "n_both": 1326,
+      "only_closure": 25,
+      "only_graph": 684,
+      "jaccard": 0.6515970515970516
+    },
+    {
+      "name": "typing-inspection",
+      "n_closure": 1353,
+      "n_graph": 2007,
+      "n_both": 1328,
+      "only_closure": 25,
+      "only_graph": 679,
+      "jaccard": 0.6535433070866141
+    },
+    {
+      "name": "pydantic-core",
+      "n_closure": 1363,
+      "n_graph": 2008,
+      "n_both": 1338,
+      "only_closure": 25,
+      "only_graph": 670,
+      "jaccard": 0.6581406787998032
+    },
+    {
+      "name": "httpcore",
+      "n_closure": 739,
+      "n_graph": 73,
+      "n_both": 63,
+      "only_closure": 676,
+      "only_graph": 10,
+      "jaccard": 0.08411214953271028
+    },
+    {
+      "name": "charset-normalizer",
+      "n_closure": 2590,
+      "n_graph": 3188,
+      "n_both": 2551,
+      "only_closure": 39,
+      "only_graph": 637,
+      "jaccard": 0.7905175085218469
+    },
+    {
+      "name": "anyio",
+      "n_closure": 1245,
+      "n_graph": 1269,
+      "n_both": 943,
+      "only_closure": 302,
+      "only_graph": 326,
+      "jaccard": 0.6002546148949713
+    },
+    {
+      "name": "urllib3",
+      "n_closure": 2892,
+      "n_graph": 3435,
+      "n_both": 2853,
+      "only_closure": 39,
+      "only_graph": 582,
+      "jaccard": 0.8212435233160622
+    },
+    {
+      "name": "six",
+      "n_closure": 1121,
+      "n_graph": 836,
+      "n_both": 722,
+      "only_closure": 399,
+      "only_graph": 114,
+      "jaccard": 0.5846153846153846
+    },
+    {
+      "name": "packaging",
+      "n_closure": 2513,
+      "n_graph": 2786,
+      "n_both": 2402,
+      "only_closure": 111,
+      "only_graph": 384,
+      "jaccard": 0.8291335864687608
+    },
+    {
+      "name": "attrs",
+      "n_closure": 1355,
+      "n_graph": 1732,
+      "n_both": 1297,
+      "only_closure": 58,
+      "only_graph": 435,
+      "jaccard": 0.7245810055865922
+    },
+    {
+      "name": "pycparser",
+      "n_closure": 1341,
+      "n_graph": 1567,
+      "n_both": 1221,
+      "only_closure": 120,
+      "only_graph": 346,
+      "jaccard": 0.7237700059276823
+    },
+    {
+      "name": "cffi",
+      "n_closure": 1350,
+      "n_graph": 1566,
+      "n_both": 1232,
+      "only_closure": 118,
+      "only_graph": 334,
+      "jaccard": 0.7315914489311164
+    },
+    {
+      "name": "python-dateutil",
+      "n_closure": 1950,
+      "n_graph": 2179,
+      "n_both": 1854,
+      "only_closure": 96,
+      "only_graph": 325,
+      "jaccard": 0.814945054945055
+    },
+    {
+      "name": "pygments",
+      "n_closure": 1242,
+      "n_graph": 1594,
+      "n_both": 1223,
+      "only_closure": 19,
+      "only_graph": 371,
+      "jaccard": 0.7582145071295723
+    }
+  ],
+  "sensitivity": {
+    "all_graph_seeds": {
+      "n_seeds": 14992,
+      "spearman_closure_vs_graph": 0.9314528856793011,
+      "sum_closure_side": 153909,
+      "sum_graph_side": 189829,
+      "top20_overlap": 19
+    },
+    "strict_complete_seeds_only": {
+      "n_seeds": 14715,
+      "spearman_closure_vs_graph": 0.9314528856793011,
+      "sum_closure_side": 153909,
+      "sum_graph_side": 189829,
+      "top20_overlap": 19
+    }
+  },
+  "boundary_nodes": {
+    "n_seed_nodes": 14992,
+    "n_unexpanded_leaf_nodes": 788,
+    "note": "榜外叶子没有抓到出边，因此经过它们的更深路径在图口径里被截断；它们在 nodes.csv 里以 in_seed=False 标注，不应被当成『无依赖』。"
+  }
+}

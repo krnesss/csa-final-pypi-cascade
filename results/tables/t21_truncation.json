@@ -1,10 +1,10 @@
 {
-  "n_nodes": 15718,
-  "n_with_seed_dependents": 7128,
-  "n_with_graph_dependents": 6646,
-  "n_comparable": 6646,
+  "n_nodes": 15780,
+  "n_with_seed_dependents": 7141,
+  "n_with_graph_dependents": 6876,
+  "n_comparable": 6876,
   "median_graph_minus_closure": 0.0,
-  "mean_graph_minus_closure": -0.20282876918447187,
-  "p95_graph_minus_closure": 2.0,
-  "spearman_graph_vs_closure": 0.9709429110384445
+  "mean_graph_minus_closure": 3.2581442699243746,
+  "p95_graph_minus_closure": 7.0,
+  "spearman_graph_vs_closure": 0.9540098963416963
 }

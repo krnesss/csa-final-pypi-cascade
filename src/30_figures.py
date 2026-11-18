@@ -251,43 +251,86 @@ def _palette(s):
 
 # ------------------------------------------------------------------ F8 零模型对照
 def f8_null():
+    """两族 × 两口径的零模型对照（评审意见 D-01）。
+
+    左：分布对比（**按族分开**，因为两族的 null 均值差 25 倍）；
+    中：S(q) 曲线（两族都画，random 与 by_in_degree 各一条）；
+    右：每族的实测最大 SCC —— 这是"伪影有多大"的直接证据。
+    """
     p = TBL / "t24_null_compare.csv"
     if not p.exists():
         log("  跳过 f08（无 t24_null_compare.csv）")
         return
     n = read_csv_safe(p)
     c = read_csv_safe(TBL / "t24_null_curves.csv")
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.2))
+    fams = [f for f in ("degree", "cycle_pres") if f in set(n["family"])]
+    fam_label = {"degree": "朴素族（允许出现环）", "cycle_pres": "保环族（序键向前）"}
+    fam_color = {"degree": "null", "cycle_pres": "s"}
+
+    fig, axes = plt.subplots(1, 3, figsize=(14.5, 4.4))
+
+    # ---- 左：反向可达均值的分解（这是全图最重要的一栏）
     ax = axes[0]
-    met = ["true_max", "null_max", "true_p99", "null_p99"]
-    lab = ["真实\nmax", "零模型\nmax", "真实\np99", "零模型\np99"]
-    cols = [C["obs"], C["null"], C["obs"], C["null"]]
-    ax.bar(lab, [n[m].mean() for m in met], yerr=[n[m].std() for m in met],
-           color=cols, alpha=.85, capsize=3)
-    ax.set_ylabel("反向可达集规模")
-    ax.set_title("级联规模：真实 vs 保度序列零模型")
+    bars, labels, colors = [], [], []
+    bars.append(float(n["true_mean"].mean()))
+    labels.append("真实网络")
+    colors.append(C["obs"])
+    for f in fams:
+        sub = n[(n["family"] == f) & (n["metric"] == "node")]
+        bars.append(float(sub["null_mean"].mean()))
+        labels.append(fam_label.get(f, f))
+        colors.append(C[fam_color.get(f, "null")])
+    errs = [0.0] + [float(n[(n["family"] == f) & (n["metric"] == "node")]
+                          ["null_mean"].std()) for f in fams]
+    ax.bar(labels, bars, yerr=errs, color=colors, alpha=.88, capsize=4)
+    ax.set_yscale("log")
+    ax.set_ylabel("反向可达集均值（对数轴）")
+    ax.set_title("级联规模均值：把伪影剥出来")
+    for i, v in enumerate(bars):
+        ratio = v / max(1e-9, bars[0])
+        ax.text(i, v * 1.15, f"{v:.1f}\n({ratio:.2f}×)", ha="center", fontsize=8.5)
+    ax.tick_params(axis="x", labelsize=8.5)
+
+    # ---- 中：S(q)，两族都画
     ax = axes[1]
-    for mode, ls in [("random", "--"), ("by_in_degree", "-")]:
-        sub = c[c["mode"] == mode].sort_values("q")
-        ax.plot(sub["q"], sub["S_true"], ls=ls, lw=2.2, color=C["obs"],
-                label=f"真实 · {mode}")
-        ax.plot(sub["q"], sub["S_null_mean"], ls=ls, lw=1.6, color=C["null"],
-                label=f"零模型 · {mode}")
+    base = c[c["mode"] == "random"].groupby("q")["S_true"].mean().reset_index()
+    ax.plot(base["q"], base["S_true"], "-", lw=2.6, color=C["obs"], label="真实 · random")
+    for f in fams:
+        sub = c[(c["family"] == f) & (c["mode"] == "random")].sort_values("q")
+        col = C[fam_color.get(f, "null")]
+        ax.plot(sub["q"], sub["S_null_mean"], "--", lw=1.8, color=col,
+                label=f"零模型 · {fam_label.get(f, f)}")
         ax.fill_between(sub["q"], sub["S_null_mean"] - sub["S_null_std"],
-                        sub["S_null_mean"] + sub["S_null_std"], color=C["null"], alpha=.18)
+                        sub["S_null_mean"] + sub["S_null_std"], color=col, alpha=.16)
+    tq = c[c["mode"] == "by_in_degree"].groupby("q")["S_true"].mean().reset_index()
+    ax.plot(tq["q"], tq["S_true"], ":", lw=2.4, color=C["obs"], label="真实 · 靶向")
+    for f in fams:
+        sub = c[(c["family"] == f) & (c["mode"] == "by_in_degree")].sort_values("q")
+        ax.plot(sub["q"], sub["S_null_mean"], "-.", lw=1.5,
+                color=C[fam_color.get(f, "null")],
+                label=f"零模型 · {fam_label.get(f, f)}（靶向）")
     ax.set_xlabel("移除比例 q"); ax.set_ylabel("S(q)")
-    ax.legend(fontsize=8)
-    ax.set_title("S(q)：真实 vs 零模型")
+    ax.set_title("S(q)：两族零模型与真实网络")
+    ax.legend(fontsize=7, loc="lower left")
+
+    # ---- 右：每族实测最大 SCC（伪影的直接证据）
     ax = axes[2]
-    ax.scatter(n["true_gini"], n["null_gini"], s=40, color=C["s"])
-    lim = [min(n["true_gini"].min(), n["null_gini"].min()) * .95,
-           max(n["true_gini"].max(), n["null_gini"].max()) * 1.02]
-    ax.plot(lim, lim, "--", color="gray", lw=1)
-    ax.set_xlabel("真实网络 Gini(反向可达集)")
-    ax.set_ylabel("零模型 Gini")
-    ax.set_title("集中度对比")
-    fig.suptitle("图 8  对照实验：把“谁连谁”随机化但保持度序列后，级联结构还剩多少？",
-                 fontsize=11.5, y=1.03)
+    data, names = [], []
+    for f in fams:
+        sub = n[(n["family"] == f) & (n["metric"] == "node")]
+        data.append(sub["null_max_scc"].to_numpy(dtype=float))
+        names.append(fam_label.get(f, f))
+    ax.boxplot(data, labels=names, widths=.5)
+    ax.axhline(8, ls="--", lw=1.6, color=C["obs"])
+    ax.text(.55, 9.5, "真实图最大 SCC = 8", color=C["obs"], fontsize=8.5)
+    ax.set_yscale("log")
+    ax.set_ylabel("零模型的最大强连通分量规模（对数轴）")
+    ax.set_title("人造环有多大：伪影的直接证据")
+    ax.tick_params(axis="x", labelsize=8.5)
+
+    fig.suptitle("图 8  零模型分解：朴素保度交换的 46× 里有多少是它自己造出来的环？",
+                 fontsize=11.5, y=1.02)
+    fig.tight_layout()
     save(fig, "f08_null_model")
 
 
@@ -369,36 +412,56 @@ def f11_dual_risk():
 
 # ------------------------------------------------------------------ F12 局部网络
 def f12_subgraph():
-    nodes = read_csv_safe("data/processed/nodes.csv")
+    """评审意见 D-04：核心子图控制在 15–30 个节点，其余交给汇总图。
+
+    做法：先取传递依赖者数 Top-45，再按"只看这些包之间的边"取最大 k-core，
+    把孤立/边缘的节点剔掉，最后按广度保留最核心的 24 个。
+    标签只给跨度最大的 12 个，避免投影时糊成一团。
+    """
     edges = read_csv_safe("data/processed/edges.csv")
     nm = pd.read_parquet(abspath("data/processed/node_metrics.parquet"))
     import networkx as nx
 
-    top = nm.sort_values("n_transitive_dependents", ascending=False).head(45)["name"].tolist()
-    keep = set(top)
+    sz = nm.set_index("name")["n_transitive_dependents"]
+    pool = nm.sort_values("n_transitive_dependents", ascending=False).head(45)["name"].tolist()
+    keep = set(pool)
     e = edges[edges["src"].isin(keep) & edges["dst"].isin(keep)]
-    G = nx.DiGraph()
-    G.add_nodes_from(keep)
-    G.add_edges_from(zip(e["src"], e["dst"]))
-    if G.number_of_edges() < 20:
+    G0 = nx.DiGraph()
+    G0.add_nodes_from(keep)
+    G0.add_edges_from(zip(e["src"], e["dst"]))
+    # 取最密的核心（无向投影上的最大 k-core），控制在 24 个节点以内
+    U = G0.to_undirected()
+    core = max(nx.core_number(U).values()) if U.number_of_nodes() else 0
+    while core > 0:
+        sub = nx.k_core(U, k=core)
+        if sub.number_of_nodes() >= 12:
+            break
+        core -= 1
+    sel = set(sub.nodes()) if core > 0 else keep
+    if len(sel) > 24:
+        sel = set(sorted(sel, key=lambda v: (-int(sz.get(v, 0)), v))[:24])
+    G = G0.subgraph(sel).copy()
+    if G.number_of_edges() < 8:
         log("  跳过 f12（子图过稀）")
         return
-    sz = nm.set_index("name")["n_transitive_dependents"]
-    pos = nx.spring_layout(G, seed=7, k=.6)
+    log(f"  f12 子图：{G.number_of_nodes()} 节点 / {G.number_of_edges()} 边（k-core={core}）")
+
+    pos = nx.spring_layout(G, seed=7, k=.9, iterations=260)
     fig, ax = plt.subplots(figsize=(9.5, 7.5))
-    ns = [40 + 260 * np.log1p(sz.get(v, 1)) / np.log1p(sz.max()) for v in G.nodes()]
-    nx.draw_networkx_edges(G, pos, ax=ax, arrows=True, arrowsize=7, width=.7,
-                           edge_color="#888", alpha=.5, connectionstyle="arc3,rad=0.08")
+    ns = [60 + 320 * np.log1p(sz.get(v, 1)) / np.log1p(sz.max()) for v in G.nodes()]
+    nx.draw_networkx_edges(G, pos, ax=ax, arrows=True, arrowsize=8, width=.8,
+                           edge_color="#888", alpha=.55, connectionstyle="arc3,rad=0.08")
     nc = [sz.get(v, 1) for v in G.nodes()]
     sc = nx.draw_networkx_nodes(G, pos, ax=ax, node_size=ns, node_color=nc,
-                                cmap="YlOrRd", linewidths=.4, edgecolors="black")
-    nx.draw_networkx_labels(G, pos, ax=ax,
-                            labels={v: v for v in G.nodes() if sz.get(v, 0) > 0},
-                            font_size=6.5)
+                                cmap="YlOrRd", linewidths=.5, edgecolors="black")
+    # 只给广度最大的 12 个节点标名，其余留空以免投影不可读
+    lab = {v for v in sorted(G.nodes(), key=lambda x: (-int(sz.get(x, 0)), x))[:12]}
+    nx.draw_networkx_labels(G, pos, ax=ax, labels={v: v for v in lab}, font_size=8)
     fig.colorbar(sc, ax=ax, label="传递依赖者数")
     ax.set_axis_off()
-    ax.set_title("图 12  Top-45 瓶颈包之间的依赖骨架（箭头 A→B 表示 A 依赖 B）\n"
-                 "越红越大 = 一旦出问题波及越广", fontsize=11)
+    ax.set_title("图 12  瓶颈包之间的依赖骨架（箭头 A→B 表示 A 依赖 B）\n"
+                 f"只画最密的 {G.number_of_nodes()} 个节点（k-core={core}）；"
+                 "越红越大 = 一旦出问题波及越广", fontsize=10.5)
     save(fig, "f12_bottleneck_subgraph")
 
 

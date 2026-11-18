@@ -1,0 +1,296 @@
+{
+  "pick_rules": {
+    "foundational": "传递依赖者数排名前 20 中下载量最高者（基础依赖包）",
+    "middleware": "传递依赖者数排名 100–300 中下载量最高者（中间库）",
+    "edge_app": "传递依赖者数排名 500–2000 中下载量最高者（边缘/应用层）"
+  },
+  "cases": {
+    "foundational": {
+      "package": "packaging",
+      "breadth_rank_by_transitive_dependents": 7,
+      "monthly_downloads": 1804970966.0,
+      "n_reachable_nodes": 2786,
+      "n_reachable_seeds_closure": 2513,
+      "max_hops": 4,
+      "diffusion_layers": [
+        {
+          "hop": 0,
+          "n_new": 1,
+          "n_cumulative": 1,
+          "examples": [
+            "packaging"
+          ]
+        },
+        {
+          "hop": 1,
+          "n_new": 815,
+          "n_cumulative": 816,
+          "examples": [
+            "a2a-sdk",
+            "abi3audit",
+            "abxpkg",
+            "accelerate",
+            "acryl-datahub"
+          ]
+        },
+        {
+          "hop": 2,
+          "n_new": 1602,
+          "n_cumulative": 2418,
+          "examples": [
+            "aa-contacts",
+            "aa-fleetpings",
+            "aa-freight",
+            "aa-killstats",
+            "aa-killtracker"
+          ]
+        },
+        {
+          "hop": 3,
+          "n_new": 338,
+          "n_cumulative": 2756,
+          "examples": [
+            "aa-inactivity",
+            "agent-framework-azurefunctions",
+            "agent-framework-foundry-local",
+            "agentevals",
+            "agentspecs"
+          ]
+        },
+        {
+          "hop": 4,
+          "n_new": 30,
+          "n_cumulative": 2786,
+          "examples": [
+            "ag-ui-strands",
+            "agent-framework-foundry-hosting",
+            "azure-ai-agentserver-invocations",
+            "azure-ai-agentserver-responses",
+            "azureml-featurestore"
+          ]
+        }
+      ],
+      "exact_paths": [
+        [
+          "packaging",
+          "a2a-sdk",
+          "adcp"
+        ],
+        [
+          "packaging",
+          "a2a-sdk",
+          "agent-framework-a2a"
+        ],
+        [
+          "packaging",
+          "a2a-sdk",
+          "agentenv-framework"
+        ]
+      ],
+      "bottleneck_metrics": {
+        "in_degree": 815.0,
+        "out_degree": 0.0,
+        "cascade_depth": 9.0,
+        "betweenness": 0.0,
+        "pagerank_importance": 0.008855283073935606,
+        "kcore": 15.0,
+        "weighted_exposure": 11704537748.0
+      },
+      "metric_ranks": {
+        "in_degree": 5,
+        "out_degree": 13329,
+        "cascade_depth": 80,
+        "betweenness": 10587,
+        "pagerank_importance": 4,
+        "kcore": 94,
+        "weighted_exposure": 6
+      }
+    },
+    "middleware": {
+      "package": "boto3",
+      "breadth_rank_by_transitive_dependents": 125,
+      "monthly_downloads": 2672326221.0,
+      "n_reachable_nodes": 265,
+      "n_reachable_seeds_closure": 242,
+      "max_hops": 4,
+      "diffusion_layers": [
+        {
+          "hop": 0,
+          "n_new": 1,
+          "n_cumulative": 1,
+          "examples": [
+            "boto3"
+          ]
+        },
+        {
+          "hop": 1,
+          "n_new": 181,
+          "n_cumulative": 182,
+          "examples": [
+            "agent-framework-bedrock",
+            "amazon-braket-sdk",
+            "amazon-sns-extended-client",
+            "amazon-sqs-extended-client",
+            "amazon-textract-caller"
+          ]
+        },
+        {
+          "hop": 2,
+          "n_new": 69,
+          "n_cumulative": 251,
+          "examples": [
+            "acryl-datahub-actions",
+            "adapta",
+            "ag-ui-strands",
+            "agentenv-framework",
+            "agentex-sdk"
+          ]
+        },
+        {
+          "hop": 3,
+          "n_new": 12,
+          "n_cumulative": 263,
+          "examples": [
+            "atomate2",
+            "doped",
+            "homeassistant",
+            "langflow",
+            "ldp"
+          ]
+        },
+        {
+          "hop": 4,
+          "n_new": 2,
+          "n_cumulative": 265,
+          "examples": [
+            "paper-qa-pypdf",
+            "pytest-homeassistant-custom-component"
+          ]
+        }
+      ],
+      "exact_paths": [
+        [
+          "boto3",
+          "amazon-textract-caller",
+          "amazon-textract-textractor"
+        ],
+        [
+          "boto3",
+          "amazon-textract-response-parser",
+          "amazon-textract-caller"
+        ],
+        [
+          "boto3",
+          "aurora-data-api",
+          "sqlalchemy-aurora-data-api"
+        ]
+      ],
+      "bottleneck_metrics": {
+        "in_degree": 181.0,
+        "out_degree": 3.0,
+        "cascade_depth": 6.0,
+        "betweenness": 3.875170915950973e-06,
+        "pagerank_importance": 0.0014234148793654813,
+        "kcore": 15.0,
+        "weighted_exposure": 611223450.0
+      },
+      "metric_ranks": {
+        "in_degree": 38,
+        "out_degree": 4380,
+        "cascade_depth": 301,
+        "betweenness": 43,
+        "pagerank_importance": 52,
+        "kcore": 24,
+        "weighted_exposure": 137
+      }
+    },
+    "edge_app": {
+      "package": "aiobotocore",
+      "breadth_rank_by_transitive_dependents": 615,
+      "monthly_downloads": 661062014.0,
+      "n_reachable_nodes": 32,
+      "n_reachable_seeds_closure": 26,
+      "max_hops": 3,
+      "diffusion_layers": [
+        {
+          "hop": 0,
+          "n_new": 1,
+          "n_cumulative": 1,
+          "examples": [
+            "aiobotocore"
+          ]
+        },
+        {
+          "hop": 1,
+          "n_new": 10,
+          "n_cumulative": 11,
+          "examples": [
+            "aioboto3",
+            "aiobotocore-otel",
+            "aiomoto",
+            "dvc-s3",
+            "inspect-ai"
+          ]
+        },
+        {
+          "hop": 2,
+          "n_new": 17,
+          "n_cumulative": 28,
+          "examples": [
+            "airbyte-internal-ops",
+            "arm-pyart",
+            "cellxgene-census",
+            "datamol",
+            "earthaccess"
+          ]
+        },
+        {
+          "hop": 3,
+          "n_new": 4,
+          "n_cumulative": 32,
+          "examples": [
+            "flytekitplugins-ray",
+            "flytekitplugins-spark",
+            "pytdc",
+            "sagemaker"
+          ]
+        }
+      ],
+      "exact_paths": [
+        [
+          "aiobotocore",
+          "aioboto3",
+          "plato-sdk"
+        ],
+        [
+          "aiobotocore",
+          "aioboto3",
+          "pytest-aioboto3"
+        ],
+        [
+          "aiobotocore",
+          "inspect-ai",
+          "inspect-evals"
+        ]
+      ],
+      "bottleneck_metrics": {
+        "in_degree": 10.0,
+        "out_degree": 7.0,
+        "cascade_depth": 6.0,
+        "betweenness": 8.682080573708351e-07,
+        "pagerank_importance": 0.00010506179956478241,
+        "kcore": 9.0,
+        "weighted_exposure": 364805837.0
+      },
+      "metric_ranks": {
+        "in_degree": 547,
+        "out_degree": 1521,
+        "cascade_depth": 283,
+        "betweenness": 148,
+        "pagerank_importance": 663,
+        "kcore": 917,
+        "weighted_exposure": 199
+      }
+    }
+  }
+}

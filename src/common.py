@@ -146,7 +146,49 @@ def bits_to_mask(row: "Any", n: int) -> "Any":
       * 集合的**成员/位置**全部错乱（每个 64 位块内被置换）→
         「加权暴露量」与「按位置取值的布尔掩码」全错。
     本项目就是用 popcount 与闭包口径互相校验（Spearman 0.971）时才没暴露出来，
-    后来用 `nx.ancestors` 做集合级交叉验证才发现"大小对、成员错"。
+     后来用 `nx.ancestors` 做集合级交叉验证才发现"大小对、成员错"。
     """
     import numpy as np
     return np.unpackbits(row.view(np.uint8), bitorder="little")[:n].astype(bool)
+
+
+def mask_to_bits(mask: "Any", n_words: int | None = None) -> "Any":
+    """布尔掩码 -> (nw,) uint64 位集行，是 `bits_to_mask` 的严格逆运算。
+
+    用途：把"当前还活着的节点集合"也打包成位集，从而用 `bits[p] & alive`
+    一次算出"包 p 现在还活着的传递依赖者数"（评审意见 C-02：情景 R 里
+    已经被打破的依赖者不能再计入暴露量）。位运算把这一步从
+    "每个包跑一次图遍历"降到"每个包一次 popcount"。
+    """
+    import numpy as np
+    m = np.ascontiguousarray(np.asarray(mask, dtype=bool))
+    packed = np.packbits(m, bitorder="little")
+    pad = (-len(packed)) % 8
+    if pad:
+        packed = np.concatenate([packed, np.zeros(pad, dtype=np.uint8)])
+    words = packed.view(np.uint64).copy()
+    if n_words is not None:
+        if len(words) < n_words:
+            words = np.concatenate([words, np.zeros(n_words - len(words), dtype=np.uint64)])
+        elif len(words) > n_words:
+            words = words[:n_words]
+    return words
+
+
+_POPCOUNT_TABLE = None
+
+
+def popcount_bits(rows: "Any") -> "Any":
+    """对 (k, nw) uint64 位集批量 popcount，返回 (k,) int64。
+
+    用 8 位查表而不是 `np.bitwise_count`，是为了兼容 numpy<2.0 与 Windows 上的老轮子。
+    """
+    import numpy as np
+    global _POPCOUNT_TABLE
+    if _POPCOUNT_TABLE is None:
+        t = np.zeros(256, dtype=np.uint8)
+        for i in range(256):
+            t[i] = bin(i).count("1")
+        _POPCOUNT_TABLE = t
+    b = np.ascontiguousarray(rows, dtype=np.uint64).view(np.uint8)
+    return _POPCOUNT_TABLE[b].reshape(rows.shape[0], -1).sum(axis=1, dtype=np.int64)

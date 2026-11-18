@@ -1,0 +1,35 @@
+{
+  "seed_for_sampling": 20251207,
+  "n_per_stratum": 40,
+  "strata": {
+    "S1_seed_to_seed": {
+      "population": 35028,
+      "sampled": 40,
+      "sampling_fraction": 0.0011419435879867536,
+      "dst_appears_in_some_closure": 1.0
+    },
+    "S2_seed_to_leaf": {
+      "population": 225,
+      "sampled": 40,
+      "sampling_fraction": 0.17777777777777778,
+      "dst_appears_in_some_closure": 1.0
+    },
+    "S3_declared_fallback": {
+      "population": 12691,
+      "sampled": 40,
+      "sampling_fraction": 0.003151839886533764,
+      "dst_appears_in_some_closure": 1.0
+    }
+  },
+  "structural_checks": {
+    "n_edges": 47944,
+    "n_duplicate_pairs": 0,
+    "n_self_loops": 0,
+    "n_rel_values": {
+      "DIRECT": 35253,
+      "DIRECT_DECLARED": 12691
+    },
+    "n_src_leaf_but_has_edges": 0
+  },
+  "manual_review_protocol": "t29_edge_spotcheck.csv 的 verdict_manual 列由人工回填：打开 check_url_depsdev，在上游包该版本的依赖列表里查找 dst；一致填 Y，不一致填 N 并在 note 写实际值，无法判定填 ?。本文件交付的是『可被独立核对』的凭证，不是核对结论本身。"
+}

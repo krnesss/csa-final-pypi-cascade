@@ -1,14 +1,8 @@
 {"name": "aaaaaaaaa", "status": "not_found", "deps_status": "missing", "nodes": []}
 {"name": "piot-fixture-zzz-python", "status": "not_found", "deps_status": "missing", "nodes": []}
 {"name": "piot-fixture-zzz-python-maturin", "status": "not_found", "deps_status": "missing", "nodes": []}
+{"name": "yutori", "status": "not_found", "deps_status": "missing", "nodes": []}
 {"name": "spanishconjugator", "status": "not_found", "deps_status": "missing", "nodes": []}
 {"name": "piot-fixture-zzz-python-hatch", "status": "not_found", "deps_status": "missing", "nodes": []}
 {"name": "piot-fixture-zzz-python-no-rust", "status": "not_found", "deps_status": "missing", "nodes": []}
 {"name": "piot-fixture-zzz-python-no-rust-fp", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "spanishconjugator", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "piot-fixture-zzz-python", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "piot-fixture-zzz-python-no-rust", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "piot-fixture-zzz-python-maturin", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "piot-fixture-zzz-python-no-rust-fp", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "piot-fixture-zzz-python-hatch", "status": "not_found", "deps_status": "missing", "nodes": []}
-{"name": "aaaaaaaaa", "status": "not_found", "deps_status": "missing", "nodes": []}

@@ -122,9 +122,11 @@ def main() -> None:
     real_pairs: set[tuple[str, str]] = set()
 
     rows = []
+    rng_by_key: dict[tuple[str, str], object] = {}
     n_eval = n_unk = 0
     for r in osv.itertuples(index=False):
         pkg, adv = r.package, r.advisory_id
+        rng_by_key[(adv, pkg)] = r.ranges
         iv, _bad = osv_ranges_to_intervals(r.ranges)
         los, open_ended = lower_bounds(r.ranges)
         ev_raw = getattr(r, "explicit_versions", None)
@@ -187,18 +189,66 @@ def main() -> None:
     log(f"逐 advisory 判定完成：{len(imp)} 行；版本判定 {n_eval:,} 次；无法判定 {n_unk:,} 次")
 
     # ---------------------------------------------------------- 三级分解
+    #
+    # ★ 口径命名修正（评审意见 B-01，P0）
+    # 早期版本把 S→F 的收缩写成"版本推进 2.85%"、把 F→V 的收缩写成"补丁止血 98.92%"。
+    # 这两个名字都**把一个口径事实说成了因果归因**，而且和自己下一行的说明互相矛盾。
+    # 能被数据支持的只有下面这些**口径事实**：
+    #   S→F：把 fixed 边界抹掉后命中几乎不变 ⇒ 几乎所有结构命中本来就落在 ≥introduced 一侧。
+    #        这跟"依赖者有没有升级"无关：慢照口径里根本没有 fixed 这个概念。
+    #   F→V：命中集合从 "≥introduced" 收缩到 "落在脆弱区间内"。
+    #        在一个"单一 [introduced, fixed) 区间"的 advisory 上，这个差集**恰好**
+    #        就是 "resolved ≥ fixed" 的那批依赖者 —— 这是一条可以逐条核对的
+    #        **定义恒等式**，不是机制发现。
+    # 我们**没有**时间序列，因此无法观察"谁在何时升级"，
+    # 也就不能把 F→V 归因于"依赖者主动升级"或"补丁发布止血"。
     hs = imp[imp["a_struct"] > 0].copy()
     S, F, V = int(hs["a_struct"].sum()), int(hs["a_unfixed"].sum()), int(hs["a_version"].sum())
+
+    closed = hs[~hs["open_ended"]]
+    opened = hs[hs["open_ended"]]
+    shrink_from_closed = int(closed["a_unfixed"].sum() - closed["a_version"].sum())
+    shrink_from_open = int(opened["a_unfixed"].sum() - opened["a_version"].sum())
+    log(f"F−V 的来源分解：已封口 advisory 贡献 {shrink_from_closed:,}，"
+        f"未封口 advisory 贡献 {shrink_from_open:,}（后者应为 0，否则口径不自洽）")
+
+    # 单区间 advisory 上，"F 命中但不脆弱"应当恰好等于"resolved ≥ fixed"
+    single_range_ok = 0
+    n_single_range = 0
+    for r in closed.itertuples(index=False):
+        fix = getattr(r, "fixed", "")
+        if not isinstance(fix, str) or not fix.strip() or fix == "nan" or ";" in fix:
+            continue
+        rec = by_dep.get(r.package)
+        if rec is None:
+            continue
+        _sd, vs, _w = rec
+        thr = pv(fix)
+        if thr is None:
+            continue
+        loose = lower_bounds(rng_by_key.get((r.advisory_id, r.package)))[0]
+        if len(loose) != 1:
+            continue
+        n_single_range += 1
+        lo = loose[0]
+        single_range_ok += sum(1 for v in vs
+                               if v is not None and v >= lo and v >= thr)
+    log(f"单区间 advisory 上『resolved ≥ fixed』的同口径计数 = {single_range_ok:,} "
+        f"（覆盖 {n_single_range} 条 advisory；用来核对 F−V 的构成）")
+
     dec = pd.DataFrame([
-        {"口径": "S 结构上界（无视版本，naive 扫描）", "包-漏洞对数": S,
-         "相对 S 的保留比例": 1.0, "收缩归因": "—",
-         "说明": "任何传递依赖者都算"},
-        {"口径": "F 反事实：漏洞至今未修复", "包-漏洞对数": F,
-         "相对 S 的保留比例": F / max(1, S), "收缩归因": f"版本推进 {1 - F / max(1, S):.2%}",
-         "说明": "依赖者的解析版本早已越过 introduced"},
-        {"口径": "V 现实：OSV 区间 + 今日解析版本", "包-漏洞对数": V,
-         "相对 S 的保留比例": V / max(1, S), "收缩归因": f"补丁止血 {1 - V / max(1, F):.2%}",
-         "说明": "依赖者解析版本已越过 fixed"},
+        {"口径": "S 结构上界（无视版本）", "包-漏洞对数": S,
+         "相对S的保留比例": 1.0, "相对上一口径的收缩": np.nan,
+         "这一步改动了什么（口径事实，非因果归因）": "任何传递依赖者都算命中；无版本概念"},
+        {"口径": "F 反事实：漏洞至今未修复（[introduced, ∞)）", "包-漏洞对数": F,
+         "相对S的保留比例": F / max(1, S), "相对上一口径的收缩": (S - F) / max(1, S),
+         "这一步改动了什么（口径事实，非因果归因）":
+             "只抹掉 fixed 边界。收缩很小 ⇒ 绝大多数结构命中本就落在 ≥introduced 一侧"},
+        {"口径": "V 现实：OSV 区间 + 当期解析版本", "包-漏洞对数": V,
+         "相对S的保留比例": V / max(1, S), "相对上一口径的收缩": (F - V) / max(1, F),
+         "这一步改动了什么（口径事实，非因果归因）":
+             "把命中收缩到『落在脆弱区间内』。单区间 advisory 上该差集恰等于 resolved≥fixed，"
+             "属定义恒等式；不能读作『依赖者完成了同等比例的升级』"},
     ])
     dec.to_csv(ensure_parent(TBL / "t22_decomposition.csv"), index=False, encoding="utf-8")
     log("三级口径分解:\n" + dec.round(4).to_string(index=False))
@@ -213,8 +263,19 @@ def main() -> None:
         "ratio_S_over_V": round(S / max(1, V), 2),
         "ratio_S_over_F": round(S / max(1, F), 2),
         "ratio_F_over_V": round(F / max(1, V), 2),
-        "attrib_upgrade": round(1 - F / max(1, S), 4),
-        "attrib_patch": round(1 - V / max(1, F), 4),
+        # ★ 评审 B-01：键名从 attrib_upgrade / attrib_patch 改成纯粹描述口径的
+        # shrink_S_to_F / shrink_F_to_V。原来的名字本身就是那个错误的归因断言。
+        "shrink_S_to_F": round(1 - F / max(1, S), 4),
+        "shrink_F_to_V": round(1 - V / max(1, F), 4),
+        "attribution_note": (
+            "shrink_S_to_F = (S−F)/S，分母 S；shrink_F_to_V = (F−V)/F，分母 F。"
+            "两者都是**口径之间**的收缩，不是机制归因：本项目没有时间序列，"
+            "既无法观察『依赖者何时升级』，也无法把 F→V 拆成『补丁发布』与『解析取最新版』。"
+            "单区间 advisory 上 F→V 的差集恒等于 resolved≥fixed，属定义恒等式。"),
+        "shrink_F_to_V_from_closed_advisories": shrink_from_closed,
+        "shrink_F_to_V_from_open_advisories": shrink_from_open,
+        "n_single_range_advisories_checked": n_single_range,
+        "n_ge_fixed_single_range_count": single_range_ok,
         "expo_S": float(hs["expo_struct"].sum()),
         "expo_F": float(hs["expo_unfixed"].sum()),
         "expo_V": float(hs["expo_version"].sum()),
