@@ -1,0 +1,16 @@
+# 默认：文本文件按 LF 入库、按 LF 检出，避免 Windows 的 CRLF 让不同人 clone 出不同字节
+* text=auto eol=lf
+
+# 数据文件：逐字节原样保存，不做换行归一。
+# 原因：报告里的每个数字都对应一个固定的时间切片；如果 CSV/JSONL 的字节
+# 会随 clone 变化，那"用同一份数据重跑得到同一结果"就无法严格核对。
+*.csv    -text
+*.jsonl  -text
+*.json   -text
+*.parquet -text
+
+# 二进制：禁止任何转换与文本 diff
+*.npy    binary
+*.zip    binary
+*.png    binary
+*.pptx   binary

@@ -1,0 +1,23 @@
+{
+  "n_advisories_total": 31957,
+  "n_advisories_with_at_least_one_dependent": 9595,
+  "n_advisories_open_ended": 25,
+  "n_advisories_with_real_impact": 1404,
+  "frac_advisories_zero_real_impact": 0.8537,
+  "sum_S": 1314448,
+  "sum_F": 1276947,
+  "sum_V": 13730,
+  "ratio_S_over_V": 95.74,
+  "ratio_S_over_F": 1.03,
+  "ratio_F_over_V": 93.0,
+  "attrib_upgrade": 0.0285,
+  "attrib_patch": 0.9892,
+  "expo_S": 3382336417947.0,
+  "expo_F": 3244921066113.0,
+  "expo_V": 12139424193.0,
+  "expo_ratio_S_over_V": 278.62,
+  "struct_pairs": 177428,
+  "real_pairs": 2550,
+  "pair_overapprox_ratio": 69.58,
+  "frac_closure_versions_unparsable": 0.0217
+}

@@ -1,0 +1,89 @@
+# =============================================================================
+# 复杂系统分析 期末项目 —— 开源软件依赖网络级联失效
+# 全局配置（唯一真源：所有脚本从这里读参数，保证可复现）
+# =============================================================================
+
+project:
+  name: "PyPI-Dependency-Cascade"
+  topic: "Q4 开源软件生态中，一个底层包的漏洞会怎样级联到整个生态"
+
+# -----------------------------------------------------------------------------
+# 时间切片：本项目的"快照"定义
+# 文献与工程上都必须固定一个时间切片，因为依赖关系是动态的。
+# 我们的切片定义 = (a) 下载量榜的月份 (b) 每个包在抓取时被解析到的具体版本号
+# 这两者在 data/processed/universe.csv 与 data/processed/deps_nodes.csv 中被逐包记录，
+# 因此网络可以被逐版本重建，不依赖"抓取那一天"。
+# -----------------------------------------------------------------------------
+time_slice:
+  download_ranking_date: "auto"        # 从数据源自带 last_update 读取
+  resolution_policy: "latest-default"  # deps.dev 的 isDefault 版本
+  note: "图 = 在快照时刻对每个包解析出的默认版本所构成的已解析依赖闭包"
+
+data_sources:
+  # 生态规模 / 下载量权重（hugovk 镜像 pypistats 的 ClickHouse 统计，逐月更新）
+  top_pypi_packages:
+    url: "https://hugovk.github.io/top-pypi-packages/top-pypi-packages.min.json"
+    raw: "data/raw/top-pypi-packages.min.json"
+    n_available: 15000
+  # 依赖图：Google osv-scanner 团队的 deps.dev v3 API，返回"已解析"依赖闭包
+  depsdev:
+    base: "https://api.deps.dev/v3/systems/pypi"
+    raw_jsonl: "data/raw/depsdev_deps.jsonl"
+    failed_jsonl: "data/raw/depsdev_failed.jsonl"
+    concurrency: 16
+    retries: 4
+    timeout_s: 30
+    # 礼貌性限速：每秒最多发起的请求数
+    max_qps: 30
+  # 漏洞库：OSV.dev PyPI 全域 advisory 打包（Google 维护的聚合漏洞库）
+  osv:
+    url: "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"
+    raw_zip: "data/raw/osv_pypi_all.zip"
+    extract_dir: "data/raw/osv_pypi"
+
+# -----------------------------------------------------------------------------
+# 网络构建口径（必须显式声明，见课程要求"解释节点、边与简化假设"）
+# -----------------------------------------------------------------------------
+graph:
+  # 种子集：下载量榜前 N 名。N 越大覆盖越广，抓取成本线性增长。
+  seed_top_n: 15000
+  # 是否把闭包里"不在榜上"的叶子依赖也纳入节点（否则会人为切断级联路径）
+  include_external_leaves: true
+  # 边的语义：A -> B 表示 "A 依赖 B"（依赖流方向）
+  # 级联传播方向 = 反向（B 有漏洞 -> A 受影响）
+  edge_direction: "dependent_to_dependency"
+  # 剔除自环
+  drop_self_loops: true
+
+# -----------------------------------------------------------------------------
+# 实验参数（每个实验脚本都从 here 读取，便于敏感性分析）
+# -----------------------------------------------------------------------------
+experiments:
+  # 级联模拟
+  cascade:
+    # 结构级联的上界/下界口径见 src/31_exp_cascade.py 的 docstring
+    depth_cap: 50
+  # 韧性（移除）实验
+  resilience:
+    removal_fractions: [0.005, 0.01, 0.02, 0.03, 0.05, 0.075, 0.10, 0.15, 0.20, 0.25, 0.30]
+    n_random_repeats: 30
+    random_seed_base: 20251205
+    # 排序是否每步重算（True=自适应/动态目标，False=初始网络固定排序）
+    recompute_ranking: false
+  # 零模型对照
+  null_model:
+    n_realizations: 3
+    seed_base: 90210
+  # 瓶颈分数
+  bottleneck:
+    reverse_pagerank_alpha: 0.85
+    betweenness_k: 2000   # 介数中心性用 k 点近似（精确介数 O(VE) 在大图上不可行），null=精确
+    betweenness_seed: 7
+
+figures:
+  dpi: 220
+  style: "seaborn-v0_8-whitegrid"
+  outdir: "results/figures"
+
+tables:
+  outdir: "results/tables"

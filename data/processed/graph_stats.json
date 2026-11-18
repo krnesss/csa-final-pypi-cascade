@@ -1,0 +1,22 @@
+{
+  "snapshot_universe": "2026-11-01 06:41:05",
+  "n_nodes": 15718,
+  "n_edges": 47273,
+  "n_seed_nodes": 14993,
+  "n_external_leaves": 725,
+  "density_directed": 0.0001913578251433698,
+  "mean_out_degree": 3.0075709377783433,
+  "n_isolated_nodes": 3122,
+  "is_dag": false,
+  "n_cycles_scc": 20,
+  "max_scc_size": 8,
+  "n_weak_components": 3217,
+  "largest_wcc": 12172,
+  "largest_wcc_fraction": 0.7743987784705433,
+  "seeds_resolved_ok": 14468,
+  "seeds_unresolved_fallback": 525,
+  "seeds_missing": 7,
+  "seeds_with_truncated_closure": 525,
+  "closure_rows": 191831,
+  "frac_closure_nodes_in_universe": 0.9946619680864928
+}

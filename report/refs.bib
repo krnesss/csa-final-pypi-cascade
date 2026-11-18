@@ -1,0 +1,154 @@
+@misc{zhang2026pypicascade,
+  author    = {复杂系统分析课程期末项目组},
+  title     = {PyPI 依赖网络中的级联失效：底层包漏洞的影响传播与瓶颈识别},
+  year      = {2026},
+  note      = {课程项目，数据快照 2026-11；代码与结果见本仓库}
+}
+
+% ------------------------- 复杂网络 / 级联失效 -------------------------
+@article{albert2000error,
+  author  = {Albert, R{\'e}ka and Jeong, Hawoong and Barab{\'a}si, Albert-L{\'a}szl{\'o}},
+  title   = {Error and attack tolerance of complex networks},
+  journal = {Nature}, volume = {406}, pages = {378--382}, year = {2000}
+}
+@article{cohen2000resilience,
+  author  = {Cohen, Reuven and Erez, Keren and ben-Avraham, Daniel and Havlin, Shlomo},
+  title   = {Resilience of the Internet to random breakdowns},
+  journal = {Physical Review Letters}, volume = {85}, pages = {4626--4628}, year = {2000}
+}
+@article{buldyrev2010catastrophic,
+  author  = {Buldyrev, Sergey V. and Parshani, Roni and Paul, Gerald and Stanley, H. Eugene and Havlin, Shlomo},
+  title   = {Catastrophic cascade of failures in interdependent networks},
+  journal = {Nature}, volume = {464}, pages = {1025--1028}, year = {2010}
+}
+@article{motter2002cascade,
+  author  = {Motter, Adilson E. and Lai, Ying-Cheng},
+  title   = {Cascade-based attacks on complex networks},
+  journal = {Physical Review E}, volume = {66}, pages = {065102}, year = {2002}
+}
+@article{sole2001complexity,
+  author  = {Sol{\'e}, Ricard V. and Montoya, Jos{\'e} M.},
+  title   = {Complexity and fragility in ecological networks},
+  journal = {Proceedings of the Royal Society B}, volume = {268}, pages = {2039--2045}, year = {2001}
+}
+@article{dunne2002network,
+  author  = {Dunne, Jennifer A. and Williams, Richard J. and Martinez, Neo D.},
+  title   = {Network structure and biodiversity loss in food webs: robustness increases with connectance},
+  journal = {Ecology Letters}, volume = {5}, pages = {558--567}, year = {2002}
+}
+
+% ------------------------- 软件结构 / 依赖网络 -------------------------
+@article{valverde2002scale,
+  author  = {Valverde, Sergi and Ferrer-Cancho, Ramon and Sol{\'e}, Ricard V.},
+  title   = {Scale-free networks from optimal design},
+  journal = {Europhysics Letters}, volume = {60}, pages = {512}, year = {2002}
+}
+@article{myers2003software,
+  author  = {Myers, Christopher R.},
+  title   = {Software systems as complex networks: structure, function, and evolvability of software collaboration graphs},
+  journal = {Physical Review E}, volume = {68}, pages = {046116}, year = {2003}
+}
+@inproceedings{kikas2017structure,
+  author    = {Kikas, Riivo and Gousios, Georgios and Dumas, Marlon and Pfahl, Dietmar},
+  title     = {Structure and evolution of package dependency networks},
+  booktitle = {Proceedings of the 14th International Conference on Mining Software Repositories (MSR)},
+  year      = {2017}
+}
+@article{decan2019empirical,
+  author  = {Decan, Alexandre and Mens, Tom and Grosjean, Philippe},
+  title   = {An empirical comparison of dependency network evolution in seven software packaging ecosystems},
+  journal = {Empirical Software Engineering}, volume = {24}, pages = {381--416}, year = {2019}
+}
+
+% ------------------------- 供应链安全 -------------------------
+@inproceedings{zimmermann2019small,
+  author    = {Zimmermann, Markus and Staicu, Cristian-Alexandru and Tenny, Cam and Pradel, Michael},
+  title     = {Small World with High Risks: A Study of Security Threats in the npm Ecosystem},
+  booktitle = {28th USENIX Security Symposium}, year = {2019}
+}
+@inproceedings{pashchenko2018vulnerable,
+  author    = {Pashchenko, Ivan and Plate, Henrik and Ponta, Serena Elisa and Sabetta, Antonino and Massacci, Fabio},
+  title     = {Vulnerable Open Source Dependencies: Counting Those That Matter},
+  booktitle = {Proceedings of the 12th ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)},
+  year      = {2018}
+}
+@inproceedings{ponta2019beyond,
+  author    = {Ponta, Serena Elisa and Plate, Henrik and Sabetta, Antonino},
+  title     = {Beyond Metadata: Code-centric and Usage-based Analysis of Known Vulnerabilities in Open-Source Software},
+  booktitle = {IEEE International Conference on Software Maintenance and Evolution (ICSME)},
+  year      = {2018}
+}
+@inproceedings{ohm2020backstabber,
+  author    = {Ohm, Marc and Plate, Henrik and Sykosch, Arnold and Meier, Michael},
+  title     = {Backstabber's Knife Collection: A Review of Open Source Software Supply Chain Attacks},
+  booktitle = {Detection of Intrusions and Malware, and Vulnerability Assessment (DIMVA)},
+  year      = {2020}
+}
+@inproceedings{ladisa2022taxonomy,
+  author    = {Ladisa, Piergiorgio and Plate, Henrik and Martinez, Matias and Barais, Olivier},
+  title     = {Taxonomy of Attacks on Open-Source Software Supply Chains},
+  booktitle = {IEEE Symposium on Security and Privacy (S\&P)},
+  year      = {2022}
+}
+
+% ------------------------- 近期相关工作 -------------------------
+@misc{tracing2025propagation,
+  title  = {Tracing Vulnerability Propagation Across Open Source Software Ecosystems},
+  howpublished = {arXiv:2505.04307},
+  year   = {2025},
+  note   = {配套数据集：Zenodo record 15679629}
+}
+@misc{tracing2025maven,
+  title  = {Tracing Vulnerabilities in Maven: A Study of CVE Lifecycles and Dependency Networks},
+  howpublished = {arXiv:2502.04621},
+  year   = {2025}
+}
+@misc{maven2025structural,
+  title  = {Structural and Connectivity Patterns in the Maven Central Software Dependency Network},
+  howpublished = {arXiv:2508.13819},
+  year   = {2025},
+  note   = {复现包：Zenodo record 15691892}
+}
+
+% ------------------------- 方法 -------------------------
+@article{clauset2009powerlaw,
+  author  = {Clauset, Aaron and Shalizi, Cosma Rohilla and Newman, M. E. J.},
+  title   = {Power-law distributions in empirical data},
+  journal = {SIAM Review}, volume = {51}, pages = {661--703}, year = {2009}
+}
+@article{brandes2001faster,
+  author  = {Brandes, Ulrik},
+  title   = {A faster algorithm for betweenness centrality},
+  journal = {Journal of Mathematical Sociology}, volume = {25}, pages = {163--177}, year = {2001}
+}
+@article{eppstein2004fast,
+  author  = {Eppstein, David and Wang, Joseph},
+  title   = {Fast approximation of centrality},
+  journal = {Journal of Graph Algorithms and Applications}, volume = {8}, pages = {39--45}, year = {2004}
+}
+@article{molloy1995critical,
+  author  = {Molloy, Michael and Reed, Bruce},
+  title   = {A critical point for random graphs with a given degree sequence},
+  journal = {Random Structures \& Algorithms}, volume = {6}, pages = {161--180}, year = {1995}
+}
+@article{newman2001random,
+  author  = {Newman, M. E. J. and Strogatz, Steven H. and Watts, Duncan J.},
+  title   = {Random graphs with arbitrary degree distributions and their applications},
+  journal = {Physical Review E}, volume = {64}, pages = {026118}, year = {2001}
+}
+@inproceedings{brin1998anatomy,
+  author    = {Brin, Sergey and Page, Lawrence},
+  title     = {The anatomy of a large-scale hypertextual Web search engine},
+  booktitle = {Proceedings of the 7th International World Wide Web Conference (WWW)},
+  year      = {1998}
+}
+@article{newman2005measure,
+  author  = {Newman, M. E. J.},
+  title   = {A measure of betweenness centrality based on random walks},
+  journal = {Social Networks}, volume = {27}, pages = {39--54}, year = {2005}
+}
+@article{seidman1983network,
+  author  = {Seidman, Stephen B.},
+  title   = {Network structure and minimum degree},
+  journal = {Social Networks}, volume = {5}, pages = {269--287}, year = {1983}
+}
